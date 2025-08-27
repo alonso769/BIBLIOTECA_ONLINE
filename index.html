@@ -3,116 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de PDF | Colosal Producciones</title>
+  <title>Visor de PDFs</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #111;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+      background: #f5f5f5;
     }
 
     h1 {
-      font-size: 2.5rem;
       margin-bottom: 20px;
-      color: #f5f5dc;
-      text-align: center;
     }
 
-    .pdf-input-container {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 30px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    select, button, input {
+      margin: 10px;
+      padding: 8px;
+      font-size: 16px;
     }
 
-    .pdf-input-container input {
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      outline: none;
+    #visor {
+      display: none; /* oculto hasta que escoja PDF */
+      margin-top: 20px;
     }
 
-    .pdf-input-container button {
-      padding: 12px;
-      background: #cba9d9;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-      color: #000;
-    }
-
-    .pdf-input-container button:hover {
-      background: #b898c6;
-      transform: scale(1.05);
-    }
-
-    /* Contenedor del visor */
-    .pdf-viewer {
-      width: 100%;
-      max-width: 900px;
+    iframe {
+      width: 90%;
       height: 600px;
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
-      display: none; /* Oculto hasta que cargue un PDF */
+      border: 2px solid #333;
+      border-radius: 8px;
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      h1 { font-size: 2rem; }
-      .pdf-viewer { height: 400px; }
-    }
-
-    @media (max-width: 480px) {
-      h1 { font-size: 1.6rem; }
-      .pdf-viewer { height: 300px; }
+    .upload-box {
+      margin-top: 20px;
+      padding: 15px;
+      border: 2px dashed #666;
+      border-radius: 10px;
+      background: #fff;
+      display: inline-block;
     }
   </style>
 </head>
 <body>
+  <h1>📂 Selecciona un PDF</h1>
 
-  <h1>Visor de PDF</h1>
+  <!-- Menú desplegable -->
+  <select id="pdfSelector">
+    <option value="" disabled selected>-- Escoge un documento --</option>
+    <option value="pdf/CV-DIRIS_certificado.pdf">CV DIRIS Certificado</option>
+    <option value="pdfs/ejemplo2.pdf">Ejemplo 2</option>
+    <option value="pdfs/ejemplo3.pdf">Ejemplo 3</option>
+  </select>
 
-  <!-- Caja para poner enlace del PDF -->
-  <div class="pdf-input-container">
-    <input type="text" id="pdf-url" placeholder="Pega aquí el enlace del PDF">
-    <button onclick="verPDF()">📄 Ver PDF</button>
+  <!-- Botón de descarga -->
+  <button id="downloadBtn" disabled>⬇ Descargar PDF</button>
+
+  <!-- Subida de PDF con guardado real -->
+ <div class="upload-box">
+  <h3>📤 Subir un nuevo PDF</h3>
+  <form action="subir.php" method="post" enctype="multipart/form-data">
+    <input type="file" name="archivo" accept="application/pdf" required>
+    <button type="submit">💾 Guardar en repositorio</button>
+  </form>
+</div>
+
+
+  <!-- Visor -->
+  <div id="visor">
+    <iframe id="pdfViewer" src=""></iframe>
   </div>
 
-  <!-- Visor del PDF -->
-  <iframe id="pdf-viewer" class="pdf-viewer"></iframe>
-
   <script>
-    function verPDF() {
-      const url = document.getElementById('pdf-url').value;
-      const viewer = document.getElementById('pdf-viewer');
+    const pdfSelector = document.getElementById("pdfSelector");
+    const pdfViewer = document.getElementById("pdfViewer");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const visor = document.getElementById("visor");
 
-      if (url.trim() === "") {
-        alert("Por favor ingresa un enlace de PDF válido.");
-        return;
+    // Mostrar PDF seleccionado
+    pdfSelector.addEventListener("change", () => {
+      const selectedPDF = pdfSelector.value;
+
+      if (selectedPDF) {
+        pdfViewer.src = selectedPDF;
+        visor.style.display = "block"; // mostrar visor
+        downloadBtn.disabled = false;
+        downloadBtn.onclick = () => window.open(selectedPDF, "_blank");
       }
-
-      // Mostrar PDF en el iframe
-      viewer.src = url;
-      viewer.style.display = "block";
-    }
+    });
   </script>
-
 </body>
 </html>
