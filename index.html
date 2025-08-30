@@ -1,95 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de PDFs</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      text-align: center;
-      background: #f5f5f5;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    select, button, input {
-      margin: 10px;
-      padding: 8px;
-      font-size: 16px;
-    }
-
-    #visor {
-      display: none; /* oculto hasta que escoja PDF */
-      margin-top: 20px;
-    }
-
-    iframe {
-      width: 90%;
-      height: 600px;
-      border: 2px solid #333;
-      border-radius: 8px;
-    }
-
-    .upload-box {
-      margin-top: 20px;
-      padding: 15px;
-      border: 2px dashed #666;
-      border-radius: 10px;
-      background: #fff;
-      display: inline-block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca de PDFs</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>📂 Selecciona un PDF</h1>
+    <header class="header">
+        <div class="logo">BIBLIOTECA</div>
+        <ul class="nav-menu">
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">PDFs</a></li>
+            <li><a href="#contacto">Contacto</a></li> </ul>
+    </header>
 
-  <!-- Menú desplegable -->
-  <select id="pdfSelector">
-    <option value="" disabled selected>-- Escoge un documento --</option>
-    <option value="pdf/CV-DIRIS_certificado.pdf">CV DIRIS Certificado</option>
-    <option value="pdfs/ejemplo2.pdf">Ejemplo 2</option>
-    <option value="pdfs/ejemplo3.pdf">Ejemplo 3</option>
-  </select>
+    <div class="image-carousel-container">
+        <div class="image-carousel" id="imageCarousel">
+            <div class="image-slide">
+                <img src="imagenes/imagen1.png" alt="Docencia e Investigación Médica 1">
+                <div class="image-text">DOCENCIA MÉDICA</div>
+            </div>
+            <div class="image-slide">
+                <img src="imagenes/imagen2.png" alt="Docencia e Investigación Médica 2">
+                <div class="image-text">INVESTIGACIÓN</div>
+            </div>
+            <div class="image-slide">
+                <img src="imagenes/imagen3.png" alt="Docencia e Investigación Médica 3">
+                <div class="image-text">CONOCIMIENTO</div>
+            </div>
+        </div>
+        <div class="image-dots">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </div>
 
-  <!-- Botón de descarga -->
-  <button id="downloadBtn" disabled>⬇ Descargar PDF</button>
+    <main class="main-container">
+        <h1 class="section-title">Biblioteca de PDFs</h1>
 
-  <!-- Subida de PDF con guardado real -->
- <div class="upload-box">
-  <h3>📤 Subir un nuevo PDF</h3>
-  <form action="subir.php" method="post" enctype="multipart/form-data">
-    <input type="file" name="archivo" accept="application/pdf" required>
-    <button type="submit">💾 Guardar en repositorio</button>
-  </form>
-</div>
+        <div class="filter-box">
+            <input type="text" id="searchName" placeholder="Buscar por nombre...">
+            <input type="date" id="searchDate">
+            <select id="searchEspecialidad">
+                <option value="">Todas las especialidades</option>
+                <option value="medicina">Medicina</option>
+                <option value="nutricion">Nutrición</option>
+            </select>
+        </div>
 
+        <div id="grupo-medicina" class="pdf-group">
+            <h2 class="group-title">Medicina</h2>
+            <div class="pdf-grid">
+                <div class="pdf-card" data-nombre="documento medicina 1" data-fecha="2025-08-15" data-especialidad="medicina">
+                    <h3>Documento de Medicina 1</h3>
+                    <p>Fecha: 2025-08-15</p>
+                    <div class="card-buttons">
+                        <button onclick="verPDF('PDF/documento_medicina_1.pdf')">Ver PDF</button>
+                        <button onclick="descargarPDF('PDF/documento_medicina_1.pdf')">Descargar</button>
+                    </div>
+                </div>
+                <div class="pdf-card" data-nombre="cv diris certificado" data-fecha="2025-08-15" data-especialidad="medicina">
+                    <h3>CV DIRIS Certificado</h3>
+                    <p>Fecha: 2025-08-15</p>
+                    <div class="card-buttons">
+                        <button onclick="verPDF('PDF/CV-DIRIS_certificado.pdf')">Ver PDF</button>
+                        <button onclick="descargarPDF('PDF/CV-DIRIS_certificado.pdf')">Descargar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <!-- Visor -->
-  <div id="visor">
-    <iframe id="pdfViewer" src=""></iframe>
-  </div>
+        <div id="grupo-nutricion" class="pdf-group">
+            <h2 class="group-title">Nutrición</h2>
+            <div class="pdf-grid">
+                <div class="pdf-card" data-nombre="guia de nutricion 1" data-fecha="2025-09-01" data-especialidad="nutricion">
+                    <h3>Guía de Nutrición 1</h3>
+                    <p>Fecha: 2025-09-01</p>
+                    <div class="card-buttons">
+                        <button onclick="verPDF('PDF/guia_nutricion_1.pdf')">Ver PDF</button>
+                        <button onclick="descargarPDF('PDF/guia_nutricion_1.pdf')">Descargar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div id="visor" class="modal">
+        <div class="modal-content">
+            <button onclick="ocultarPDF()" class="modal-close-btn">&times;</button>
+            <iframe id="pdfViewer" src=""></iframe>
+        </div>
+    </div>
 
-  <script>
-    const pdfSelector = document.getElementById("pdfSelector");
-    const pdfViewer = document.getElementById("pdfViewer");
-    const downloadBtn = document.getElementById("downloadBtn");
-    const visor = document.getElementById("visor");
+    <footer id="contacto" class="footer">
+        <p>© 2025 Elaborado por Alonso Sixto Silva Vidal . Todos los derechos reservados</p>
+    </footer>
 
-    // Mostrar PDF seleccionado
-    pdfSelector.addEventListener("change", () => {
-      const selectedPDF = pdfSelector.value;
-
-      if (selectedPDF) {
-        pdfViewer.src = selectedPDF;
-        visor.style.display = "block"; // mostrar visor
-        downloadBtn.disabled = false;
-        downloadBtn.onclick = () => window.open(selectedPDF, "_blank");
-      }
-    });
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
