@@ -3,7 +3,7 @@ function verPDF(ruta) {
     const visor = document.getElementById("visor");
     const pdfViewer = document.getElementById("pdfViewer");
     pdfViewer.src = ruta;
-    visor.style.display = "flex"; // Usa flex para centrar el modal
+    visor.style.display = "flex";
 }
 
 function descargarPDF(ruta) {
@@ -14,14 +14,38 @@ function ocultarPDF() {
     const visor = document.getElementById("visor");
     const pdfViewer = document.getElementById("pdfViewer");
     visor.style.display = "none";
-    pdfViewer.src = ""; // Opcional: limpia el src del iframe para detener el consumo de recursos
+    pdfViewer.src = "";
+}
+
+// --- NUEVO: Ver detalles ---
+function verDetalles(btn) {
+    const card = btn.closest('.pdf-card');
+    const nombre = card.dataset.nombre;
+    const fecha = card.dataset.fecha;
+    const especialidad = card.dataset.especialidad;
+    const detalles = card.dataset.detalles || "Sin información adicional.";
+
+    const modal = document.getElementById("detallesModal");
+    const contenido = document.getElementById("detallesContenido");
+    contenido.innerHTML = `
+        <h2>${nombre}</h2>
+        <p><strong>Fecha:</strong> ${fecha}</p>
+        <p><strong>Especialidad:</strong> ${especialidad}</p>
+        <p><strong>Detalles:</strong> ${detalles}</p>
+    `;
+    modal.style.display = "flex";
+}
+
+function ocultarDetalles() {
+    const modal = document.getElementById("detallesModal");
+    document.getElementById("detallesContenido").innerHTML = "";
+    modal.style.display = "none";
 }
 
 // --- Filtros ---
 const searchName = document.getElementById("searchName");
 const searchDate = document.getElementById("searchDate");
 const searchEspecialidad = document.getElementById("searchEspecialidad");
-const allCards = document.querySelectorAll(".pdf-card");
 const allGroups = document.querySelectorAll(".pdf-group");
 
 function filtrar() {
